@@ -16,8 +16,8 @@ my @space_sizes = (10.0, 100.0, 500.0, 10.0, 100.0, 500.0, 100.0);
 my @iterations = (5, 5, 5, 5, 5, 5, 50);
 
 my @scene_percent = (.05, .15, .20, .05, .15, .20, .20);
-my @target_step = (4.0, 4.7, 5.0, 4.7, 4.7, 5.0, 4.5);
-my @target_tree = (1.5, 4.0, 4.8, 1.7, 5.0, 5.9, 4.0);
+my @target_step = (6.8, 4.0, 4.3, 6.8, 4.0, 4.2, 6.0);
+my @target_tree = (1.2, 3.5, 4.3, 1.3, 3.0, 4.0, 4.8);
 
 
 my %fast_times;
@@ -184,10 +184,10 @@ sub compare_files {
     for (my $i=0; $i < 5; $i++)
     {
         my $error = abs(@words1[$i] - @words2[$i]);
-        if ($error > 0.01){ # equivalent to 1e-2f
+        if ($error > 0.05){ # equivalent to 1e-2f
            $val1  =  @words1[$i];
            $val2  =  @words2[$i];
-           print "ERROR -- Mismatch: found correctness error at line $line_num index $i, has value $val1, should be $val2 (with delta up to .01)\n";
+           print "ERROR -- Mismatch: found correctness error at line $line_num index $i, has value $val1, should be $val2 (with delta up to .05)\n";
            return 1;
         }
     }
