@@ -25,7 +25,7 @@ my %fast_times;
 my $perf_points = 10;
 my $correctness_points = 2;
 
-my %correct;
+my @correct = (1,1,1,1,1,1,1);
 
 my %your_seq_build_times;
 my %your_seq_simulate_times;
@@ -68,14 +68,15 @@ if (defined $options{p}) {
 
 if (defined $options{s}) {
     $all_correct = 1;
-    for (my $i=0; $i < $length-1; $i++) {
+    for (my $i=0; $i < $length; $i++) {
+        $scene =  @scene_names[$i];
         print ("\n**********************  Scene : @scene_names[$i]  **********************\n\n");
         $iter = @iterations[$i];
         print ("$iter Iterations \n");
          
         process_implementation(@scene_names[$i], "Sequential", "-seq", "./nbody-release", $i);
         print "\n";
-        if ($correct{$scene} = 0){
+        if (@correct[$i] = 0){
             $all_correct = 0;
         }
     }
@@ -112,11 +113,10 @@ sub process_implementation {
         # todo: check output here
         if (compare_files($output_file, $ref_file) == 0) {
             print ("\nCorrectness passed!\n\n");
-            $correct{$scene} = 1;
         }
         else {
             print ("Correctness failed ... Check ./logs/correctness_${scene}.log and compare $output_file with reference $ref_file\n");
-            $correct{$scene} = 0;
+            @correct[$i] = 0;
         }
         my $your_total_time = ` grep "TOTAL TIME:" ./logs/correctness_${scene}.log`;
         my $your_build_time = `grep "total tree construction time:" ./logs/correctness_${scene}.log`;
@@ -260,7 +260,7 @@ sub print_summary {
             $total_speedup .= sprintf("%.6f", ($your_seq_simulate_times{$scene} + $your_seq_build_times{$scene})/($your_par_build_times{$scene} + $your_par_simulate_times{$scene}));
         }
 
-        if (! $correct{$scene}) {
+        if (! @correct[$i]) {
             $total_speedup .= " (F)";
             $total_correct = 0;
             $tree_score = 0;
