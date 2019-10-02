@@ -16,8 +16,8 @@ my @space_sizes = (10.0, 100.0, 500.0, 10.0, 100.0, 500.0, 100.0);
 my @iterations = (5, 5, 5, 5, 5, 5, 50);
 
 my @scene_percent = (.05, .15, .20, .05, .15, .20, .20);
-my @target_step = (4.0, 4.7, 5.2, 4.7, 4.9, 5.6, 4.5);
-my @target_tree = (1.5, 3.6, 4.8, 3.5, 5.1, 6.0, 3.6);
+my @target_step = (4.0, 4.7, 5.0, 4.7, 4.7, 5.0, 4.5);
+my @target_tree = (1.5, 4.0, 4.8, 1.7, 5.0, 5.9, 4.0);
 
 
 my %fast_times;
@@ -115,7 +115,7 @@ sub process_implementation {
             $correct{$scene} = 1;
         }
         else {
-            print ("Correctness failed ... Check ./logs/correctness_${scene}.log\n");
+            print ("Correctness failed ... Check ./logs/correctness_${scene}.log and compare $output_file with reference $ref_file\n");
             $correct{$scene} = 0;
         }
         my $your_total_time = ` grep "TOTAL TIME:" ./logs/correctness_${scene}.log`;
@@ -173,18 +173,21 @@ sub compare_files {
   seek $fh2, 0, 0;
 
   #compare values
+  $line_num = 0;
   while (my $line1 = <$fh1>) {
     my $line2 = <$fh2>;
+    $line_num = $line_num + 1;
+
     chomp $row;
     my @words1 = split / /, $line1;
     my @words2 = split / /, $line2;
     for (my $i=0; $i < 5; $i++)
     {
-        my $error = abs(@words1[i] - @words2[i]);
+        my $error = abs(@words1[$i] - @words2[$i]);
         if ($error > 0.01){ # equivalent to 1e-2f
-           $val1  =  @words1[i];
-           $val2  =  @words2[i];
-           print "ERROR -- Mismatch: found correctness error at index $i, has value $val1, should be $val2 (with delta up to .01)\n";
+           $val1  =  @words1[$i];
+           $val2  =  @words2[$i];
+           print "ERROR -- Mismatch: found correctness error at line $line_num index $i, has value $val1, should be $val2 (with delta up to .01)\n";
            return 1;
         }
     }
@@ -230,7 +233,7 @@ sub print_summary {
             $tree_speedup .= "*";
         }
         if ($your_seq_simulate_times{$scene} < $ref_simulate_times{$scene}){
-            $your_seq_simulate_times{$scene} .= $ref_simulate_times{$scene};
+            $your_seq_simulate_times{$scene} = $ref_simulate_times{$scene};
             $step_speedup .= "*";
         }
 
