@@ -76,7 +76,7 @@ if (defined $options{s}) {
          
         process_implementation(@scene_names[$i], "Sequential", "-seq", "./nbody-release", $i);
         print "\n";
-        if (@correct[$i] = 0){
+        if (!@correct[$i]){
             $all_correct = 0;
         }
     }
@@ -184,7 +184,7 @@ sub compare_files {
     for (my $i=0; $i < 5; $i++)
     {
         my $error = abs(@words1[$i] - @words2[$i]);
-        if ($error > 0.05){ # equivalent to 1e-2f
+        if ($error > 0.01){ # equivalent to 1e-2f
            $val1  =  @words1[$i];
            $val2  =  @words2[$i];
            print "ERROR -- Mismatch: found correctness error at line $line_num index $i, has value $val1, should be $val2 (with delta up to .05)\n";
